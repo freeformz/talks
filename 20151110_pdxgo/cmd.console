@@ -1,0 +1,10 @@
+camlistore/
+  cmd/
+    camget/
+      main.go
+    cammount/
+      main.go
+    camput/
+      main.go
+    camtool/
+      main.go

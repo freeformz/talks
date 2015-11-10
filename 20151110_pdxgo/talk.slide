@@ -6,14 +6,10 @@ edward@heroku.com
 http://icanhazdowntime.org
 @freeformz
 
-* Background
-
-- Polyglot PaaS
-- Salesforce company
-- Officially support Go
+* Heroku
+.image heroku-logo-stroke-purple.svg 400 _
 
 * Adoption
-
 - internal log delivery
 - hk
 - system metrics
@@ -21,43 +17,58 @@ http://icanhazdowntime.org
 - backplane pieces
 - proxies
 
+* Tools
+- go fmt: Format code
+- goimports: Clean up imports
+- golint: Code style checks
+- go vet: Code fitness checks
+- godep: Vendor your deps
+- errcheck: check for unchecked errors
+
 * Project Management
+- Everything non-standard goes in a `Makefile`
+- Use `-X`main.<name>=<value>` for injection
 
-- `go`fmt` / `goimports` / `go`vet` / `go`lint`
-- `godep`
-- Put everything *else* in a `Makefile`
-- Use `-X`importpath.name=value` for injection
-
-* Coding Practices
+* Coding Practices: Structure
 
 - `cmd/$CMD/main.go` pattern
+.code cmd.console
+- Balanced packages
+
+* Coding Practices: Channels
 - `struct{}` vs `bool` channels
-- `close()` instead of send
+- broadcast with `close()`
+.code broadcast.go /^func main/,/^}/
+
+* Coding Practices: Initialization
 - avoid init()
+- Handle env vars in mains
 
-* HTTP
-
-- close `http.Response.Body`
+* Coding Practices: HTTP
+- close `http.Response.Body` (http.Client)
 - Use `github.com/tylerb/graceful` (or equiv)
-- Wish: `net.context` was part of the stdlib
 - Prefer stdlib compat libs vs. magic
+- Wish: `net.context` was part of the stdlib (1.7 *maybe* as http.Request.Context)
 
-* Error Handling
+* Coding Practices: Error Handling
+Create error types
+.code err.go /^type gitError/,
 
-- Create error types
+* Coding Practices: Error Handling (Cont)
 - Annotate errors
+.code err2.go
+`github.com/juju/errors`
 - Go routines must handle their own
+.code err3.go /^func doStuff/,/^}/
 - Rollbar (or equiv)
-- `go`get`github.com/kisielk/errcheck`
 
-* Testing
-
+* Coding Practices: Testing
 - Try to stay within the stdlib
+- If you use table tests, include identifying info.
 - Use ci (Travis/Circle)
 - Test with `-race` and w/o.
 
 *  Common Libraries
-
 - github.com/joeshaw/envdecode
 - github.com/rcrowley/go-metrics
 - github.com/pborman/uuid
@@ -69,8 +80,8 @@ http://icanhazdowntime.org
 - github.com/BurntSushi/toml
 - github.com/tylerb/graceful
 - github.com/aws/aws-sdk-go
+ ...(many more)
 
 * Debatables
-
 - Assertion / testing libs
 - Logging Libraries
