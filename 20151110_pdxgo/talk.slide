@@ -22,10 +22,10 @@ http://icanhazdowntime.org
 
 * Project Management
 
-- go fmt / goimports / go vet / go lint
-- godep
-- Put everything "else" in a `Makefile`
-- Use `-X importpath.name=value` for injection
+- `go`fmt` / `goimports` / `go`vet` / `go`lint`
+- `godep`
+- Put everything *else* in a `Makefile`
+- Use `-X`importpath.name=value` for injection
 
 * Coding Practices
 
@@ -42,19 +42,19 @@ http://icanhazdowntime.org
 
 * Error Handling
 
-- Always check them
+- `go`get`github.com/kisielk/errcheck`
 - Create error types
 - Annotate errors
 - Go routines must handle their own
 - Rollbar (or equiv)
 
-# Testing
+* Testing
 
 - Try to stay within the stdlib
 - Use ci (Travis/Circle)
 - Test with `-race` and w/o.
 
-#  Common Libraries
+*  Common Libraries
 
 - github.com/joeshaw/envdecode
 - github.com/rcrowley/go-metrics
@@ -62,21 +62,13 @@ http://icanhazdowntime.org
 - github.com/Sirupsen/logrus
 - github.com/heroku/rollbar or github.com/heroku/rollrus
 - github.com/juju/errors
-- github.com/kr/pretty
-- github.com/kr/text
 - github.com/fernet/fernet-go
 - github.com/htcat/htcat
 - github.com/BurntSushi/toml
 - github.com/tylerb/graceful
+- github.com/aws/aws-sdk-go
 
-# Debatables
+* Debatables
 
 - Assertion / testing libs
--
-
-# Libraries By Herokai
-
-- https://github.com/brandur/simplebox
-- https://github.com/sclasen/swfsm
-- https://github.com/sclasen/streambolt
 -
