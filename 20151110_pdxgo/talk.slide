@@ -15,8 +15,9 @@ http://icanhazdowntime.org
 * Adoption
 
 - internal log delivery
-- git push heroku master
+- hk
 - system metrics
+- git push heroku master
 - backplane pieces
 - proxies
 
@@ -34,19 +35,20 @@ http://icanhazdowntime.org
 - `close()` instead of send
 - avoid init()
 
-* Coding Practices (HTTP)
+* HTTP
 
-- close `http.Response.Body` when err != nil
+- close `http.Response.Body`
 - Use `github.com/tylerb/graceful` (or equiv)
 - Wish: `net.context` was part of the stdlib
+- Prefer stdlib compat libs vs. magic
 
 * Error Handling
 
-- `go`get`github.com/kisielk/errcheck`
 - Create error types
 - Annotate errors
 - Go routines must handle their own
 - Rollbar (or equiv)
+- `go`get`github.com/kisielk/errcheck`
 
 * Testing
 
@@ -71,4 +73,4 @@ http://icanhazdowntime.org
 * Debatables
 
 - Assertion / testing libs
--
+- Logging Libraries
