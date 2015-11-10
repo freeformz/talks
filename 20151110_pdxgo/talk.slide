@@ -1,0 +1,82 @@
+Lessons in Go
+
+Edward Muller
+Heroku
+edward@heroku.com
+http://icanhazdowntime.org
+@freeformz
+
+* Background
+
+- Polyglot PaaS
+- Salesforce company
+- Officially support Go
+
+* Adoption
+
+- internal log delivery
+- git push heroku master
+- system metrics
+- backplane pieces
+- proxies
+
+* Project Management
+
+- go fmt / goimports / go vet / go lint
+- godep
+- Put everything "else" in a `Makefile`
+- Use `-X importpath.name=value` for injection
+
+* Coding Practices
+
+- `cmd/$CMD/main.go` pattern
+- `struct{}` vs `bool` channels
+- `close()` instead of send
+- avoid init()
+
+* Coding Practices (HTTP)
+
+- close `http.Response.Body` when err != nil
+- Use `github.com/tylerb/graceful` (or equiv)
+- Wish: `net.context` was part of the stdlib
+
+* Error Handling
+
+- Always check them
+- Create error types
+- Annotate errors
+- Go routines must handle their own
+- Rollbar (or equiv)
+
+# Testing
+
+- Try to stay within the stdlib
+- Use ci (Travis/Circle)
+- Test with `-race` and w/o.
+
+#  Common Libraries
+
+- github.com/joeshaw/envdecode
+- github.com/rcrowley/go-metrics
+- github.com/pborman/uuid
+- github.com/Sirupsen/logrus
+- github.com/heroku/rollbar or github.com/heroku/rollrus
+- github.com/juju/errors
+- github.com/kr/pretty
+- github.com/kr/text
+- github.com/fernet/fernet-go
+- github.com/htcat/htcat
+- github.com/BurntSushi/toml
+- github.com/tylerb/graceful
+
+# Debatables
+
+- Assertion / testing libs
+-
+
+# Libraries By Herokai
+
+- https://github.com/brandur/simplebox
+- https://github.com/sclasen/swfsm
+- https://github.com/sclasen/streambolt
+-
