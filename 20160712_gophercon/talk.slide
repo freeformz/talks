@@ -1,0 +1,258 @@
+State of Go 2016
+
+Edward Muller
+Heroku
+edward@heroku.com
+http://icanhazdowntime.org
+@freeformz
+
+* Responses
+
+.image responses.png
+
+* Do You Use Go?
+
+.image use_go.png
+
+* Which Version of Go do You Use?
+
+.image go_version.png
+
+- Some distros don't inclue latest versions (Debian / Centos)
+- Lazy
+
+* If you use Tip/Head/Master, how often do you update?
+
+.image go_update_tip.png
+
+- 339 Responses
+
+* Go installation
+
+.image go_installs.png
+
+* What is your $GOPATH set to?
+
+.image gopath.png
+
+* What OS do you develop on primarily?
+
+.image go_os.png
+
+* What vendor tool(s) do you use to vendor dependencies?
+
+.image go_vendor_use.png
+
+- Cut off Label: github.com/bmizerany/vendor
+
+* Which vendor tool do you prefer?
+
+.image go_vendor_prefer.png
+
+* Do you commit vendor/ into your source control system?
+
+.image commit_vendor.png
+
+* Before the `vendor/` directory how did you manage your dependencies?
+
+.image before_vendor.png
+
+* Do you use gopkg.in for your published projects?
+
+.image gopkg_in.png
+
+* Do you tag releases using semver tags?
+
+.image tag_releases.png
+
+* How satisfied with the `vendor/` directory are you?
+
+.image vendor_sat.png
+
+- Standardized Tooling
+
+* My primary editor is...
+
+.image primary_editor.png
+
+* Syntax Highlighting is...
+
+.image syntax.png
+
+* Code Completion is...
+
+.image code_comp.png
+
+* Overall how happy are you with your editor's support for Go?
+
+.image editor_over.png
+
+* Which http muxes do you use?
+
+.image http_mux.png
+
+* Which http framework/toolkits(s) do you use?
+
+.image http_frameworks.png
+
+* Which micro service toolkits/frameworks do you use?
+
+.image http_micro.png
+
+* I have read The Go Programming Language Specification
+
+.image go_spec.png
+
+* I have read Effective Go.
+
+.image effective_go.png
+
+* I regularly & directly need to use CGO
+
+.image cgo.png
+
+* What are you building with Go?
+
+.image building.png
+
+* The services / tools I am building are primarily...
+
+.image available.png
+
+* Do you use a library other than the stdlib for testing?
+
+.image testing_lib.png
+
+- Testify
+- ginko
+- goconvey
+- gocheck
+
+* Do you use table tests?
+
+.image table_tests.png
+
+* Do you write benchmarks?
+
+.image benchmarks.png
+.image sad.png
+
+* Which CI site/system(s) do you use?
+
+.image ci.png
+
+* I use `go tool pprof`
+
+.image go_tool_pprof.png
+
+* I use `go tool trace`
+
+.image go_tool_trace.png
+
+* Which additional tools do you use regularly?
+
+.image add_tools.png
+
+- Not exhaustive enough
+
+* How many open source Go projects do you contribute to?
+
+.image contribute.png
+
+- How does this compare to other languages?
+
+* Rate your expertise in Go
+
+.image expertise.png
+
+* I am regularly on
+
+.image communicate.png
+
+* I get most of my Go news from
+
+.image news.png
+
+* I get most of my Go answers from
+
+.image answers.png
+
+* I have attended one or more GoBridge
+
+.image attended_gobridge.png
+
+- More Please
+
+* Which Go Conferences have you been to?
+
+.image conferences.png
+
+* I participated in the Gopher Gala 2016
+
+.image gopher_gala.png
+
+* My Favorite Blog is...
+
+- Dave Chenney
+- Go Blog
+
+* I generally deploy my code to
+
+.image deploy.png
+
+* When I deploy I generally
+
+.image deploy_as.png
+
+* If you deploy via source code of some form do you
+
+.image deploy_source.png
+
+- ~1500 responses
+
+* What OS do you primarily deploy to?
+
+.image deploy_os.png
+
+* What do you like least?
+
+- Lack of Generics
+- vendoring / dependency management
+- error handling
+
+* What do you like most?
+
+- Simplicity
+- tooling
+- speed
+
+* What is missing from the stdlib?
+
+- GUI
+
+* What one change do you think would make Go more useful?
+
+- Generics
+- Standard GUI
+- Standard Dependency Management Tool
+
+* Non Go User: Please describe why you are not using Go
+
+- Lack of Generics
+- Go's Error Handling
+- Can't use
+- Looking for projects
+
+* If you don't mind being contacted by the surveyors with follow up questions or clarifications, please enter your email address below
+
+- 202 responses (~8%)
+
+* ToDo
+
+- Lots of write in answers to analyze
+- Probably some (many?) dupes to squash
+- Next year?
+
+* One More Thing
+
+http://golangbridge.org/
