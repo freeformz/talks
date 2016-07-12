@@ -43,8 +43,6 @@ http://icanhazdowntime.org
 
 .image go_vendor_use.png
 
-- Cut off Label: github.com/bmizerany/vendor
-
 * Which vendor tool do you prefer?
 
 .image go_vendor_prefer.png
