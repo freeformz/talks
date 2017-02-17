@@ -1,0 +1,524 @@
+Go 1.8
+
+Edward Muller
+Go Language / Heroku
+@freeformz
+edward@heroku.com
+
+* Time Flies
+
+Go 1.6 ~1 year old
+
+Go 1.7 ~6 months old
+
+Go 1.8 released today!
+
+.image images/flying_gopher.png
+
+* Notes
+
+Most of the code examples won't run except locally and using Go 1.8.
+
+The playground still runs Go 1.7.
+
+* Changes since Go 1.7
+
+- The Language
+- The Standard Library
+- The Runtime
+- The Tooling
+
+* Changes to the language
+
+* Alias!
+
+.image images/nope_cat.jpg _ 450
+
+* Alias!
+
+But probably a different version in 1.9.
+
+.link https://github.com/golang/proposal/blob/master/design/18130-type-alias.md
+.link https://github.com/golang/go/issues/18130
+
+TL;DR
+
+from
+
+    TypeSpec     = identifier Type .
+
+to
+
+    TypeSpec     = identifier [ "=" ] Type .
+
+* Conversion rules
+
+How many times have you found yourself with two types that were *almost* equal?
+
+Let's say you define `Person`:
+
+.code 20170216_pdxgo_go18/stdlib/json_old.go /type Person/,/^}/
+
+And that for some reason, like JSON you also have:
+
+.code 20170216_pdxgo_go18/stdlib/json_old.go /var aux/,/}/
+
+* Conversion rules
+
+In order to convert `aux` to type `Person` you needed to do:
+
+.code 20170216_pdxgo_go18/stdlib/json_old.go /type Person/,/}/
+
+    return Person{
+        Name:     aux.Name,
+        AgeYears: aux.AgeYears,
+        SSN:      aux.SSN
+    }
+
+* Conversion rules
+
+Since Go 1.8 you can simply do:
+
+    return Person(aux)
+
+Both types still need to have:
+
+- same *sequence* of fields (the order matters)
+- corresponding fields with same type.
+
+* Conversion rules
+
+A non-constant value x can be converted to type T in any of these cases:
+
+- x is assignable to T.
+- x's type and T have identical underlying types.
+- x's type and T are unnamed pointer types and their pointer base types have identical underlying types.
+- ...
+
+* Conversion rules
+
+A non-constant value x can be converted to type T in any of these cases:
+
+- x is assignable to T.
+- *ignoring*struct*tags*, x's type and T have identical underlying types.
+- *ignoring*struct*tags*, x's type and T are unnamed pointer types and their pointer base types have identical underlying types.
+- ...
+
+* Ports to other platforms
+
+* Ports to other platforms
+
+32-bit MIPS
+
+- big-endian (`linux/mips`)
+- little-endian (`linux/mipsle`) - requires Floating Point Unit
+
+Go on DragonFly BSD now requires DragonFly 4.4.4+.
+
+Go on OpenBSD now requires OpenBSD 5.9+.
+
+Plan 9 is now better!
+
+* Ports to other platforms
+
+Go 1.8 supports OS X 10.8+. Likely last time we support 10.8.
+
+ARM:
+
+- Go 1.8 is the last version to support ARMv5E and ARMv6 processors.
+
+- Go 1.9 will require ARMv6K. Will it work on my platform?
+
+    go tool dist -check-armv6k
+
+* Tools
+
+* Fix
+
+Fixes the import path `"golang.org/x/net/context"` to `"context"`.
+
+.code 20170216_pdxgo_go18/tools/gofix.go
+
+Simply run the command below:
+
+.play 20170216_pdxgo_go18/tools/gofix.sh /go tool/
+
+Drop the `-diff` flag to rewrite the files.
+
+* Vet
+
+"Vet is stricter in some ways and looser where it previously caused false positives."
+
+Example of extra check:
+
+.play -edit 20170216_pdxgo_go18/tools/govet.go /func main/,
+
+`govet` detects the problem statically:
+
+.play 20170216_pdxgo_go18/tools/govet.sh /go vet/
+
+* SSA everywhere!
+
+The SSA backend:
+
+- generates more compact and efficient code
+- is a better platform for optimizations
+
+For 32-bit ARM systems this means 20-30% speed up!
+
+For others (where SSA was used already) gains are 0-10%.
+
+* SSA everywhere
+
+.image 20170216_pdxgo_go18/img/benchmark.png _ 800
+
+* Default GOPATH
+
+Yay!
+
+When `GOPATH` is not defined, the tool will use:
+
+- `$HOME/go` on Unix
+- `%USERPROFILE%\go` on Windows
+
+* go bug
+
+Easier way to create bugs including all relevant information.
+
+Example:
+
+.play 20170216_pdxgo_go18/tools/gobug.sh /go bug/
+
+* Runtime
+
+* Detection of concurrent map accesses
+
+Improvement on Go 1.6.
+
+.play 20170216_pdxgo_go18/runtime/mapcrash.go /const/,/Wait\(\)/
+
+Outputs:
+
+	fatal error: concurrent map read and map write
+	fatal error: concurrent map writes
+
+* Mutex Contention Profiling
+
+Profile your benchmarks and the contention on your mutexes.
+
+    go test -bench=. -mutexprofile=mutex.out
+
+
+Alternatively, activate contention profiling with this new method.
+
+    runtime.SetMutexProfileFraction
+
+_Note_: For now `sync.RWMutex` is not profiled.
+
+* Mutex Contention Profiling
+
+Let's write a program to count how many times each factor appears from 2 to N.
+
+Example N = 10:
+
+    Factorizations:
+
+        2:  2
+        3:  3
+        4:  2 2
+        5:  5
+        6:  2 3
+        7:  7
+        8:  2 2 2
+        9:  3 3
+        10: 2 5
+
+    Count:
+
+        2: 8
+        3: 4
+        5: 2
+        7: 1
+
+* Mutex Contention Profiling
+
+Which option is better?
+
+Wide protected region:
+
+.play 20170216_pdxgo_go18/runtime/mutex/main.go /WIDE/,/Unlock/
+
+Narrow protected region:
+
+.play 20170216_pdxgo_go18/runtime/mutex/main.go /NARROW/,/}/
+
+* Benchmark
+
+    $ go test -bench=.
+
+#    BenchmarkNarrowSection/10-8         	  300000	      5085 ns/op
+#    BenchmarkNarrowSection/100-8        	   20000	     77458 ns/op
+#    BenchmarkNarrowSection/1000-8       	    2000	    909658 ns/op
+#    BenchmarkNarrowSection/10000-8      	     100	  21230633 ns/op
+#
+#    BenchmarkWideSection/10-8           	  200000	      5323 ns/op
+#    BenchmarkWideSection/100-8          	   10000	    103228 ns/op
+#    BenchmarkWideSection/1000-8         	    1000	   2131861 ns/op
+#    BenchmarkWideSection/10000-8        	      10	 103575793 ns/op
+
+.image 20170216_pdxgo_go18/img/mutex_noprofile.png _ 1000
+
+* Benchmarking with Mutex Contention
+
+    $ go test -bench=. -mutexprofile=mutex.out
+
+#    BenchmarkNarrowSection/10-8         	  300000	      5464 ns/op
+#    BenchmarkNarrowSection/100-8        	   10000	    108583 ns/op
+#    BenchmarkNarrowSection/1000-8       	    1000	   1378379 ns/op
+#    BenchmarkNarrowSection/10000-8      	     100	  32828827 ns/op
+#
+#    BenchmarkWideSection/10-8           	  200000	      7155 ns/op
+#    BenchmarkWideSection/100-8          	   10000	    197001 ns/op
+#    BenchmarkWideSection/1000-8         	     300	   4339571 ns/op
+#    BenchmarkWideSection/10000-8        	       5	 303559562 ns/op
+
+.image 20170216_pdxgo_go18/img/mutex_profile.png _ 1000
+
+* Analyzing the Mutex Contention Profile
+
+    $ go tool pprof runtime.test mutex.out
+    Entering interactive mode (type "help" for commands)
+    (pprof) list
+
+    0      5.38s (flat, cum) 43.97% of Total
+    .          .     34:				mu.Lock()
+    .          .     35:				m[f]++
+    .      5.38s     36:				mu.Unlock()
+
+    0      6.86s (flat, cum) 56.03% of Total
+    .          .     53:			mu.Lock()
+    .          .     54:			for _, f := range factors(i) {
+    .          .     55:				m[f]++
+    .          .     56:			}
+    .      6.86s     57:			mu.Unlock()
+
+* So much contention ...
+
+* Contention by CPU
+
+.image 20170216_pdxgo_go18/img/mutex_procs.png _ 1000
+
+* Comparing it to sequential algorithm
+
+.image 20170216_pdxgo_go18/img/mutex_all.png _ 1000
+
+* Comparing it to sequential algorithm (zoom)
+
+.image 20170216_pdxgo_go18/img/mutex_all_zoom.png _ 1000
+
+* Performance
+
+* GC history in tweets
+
+* go 1.5
+
+.image 20170216_pdxgo_go18/img/gct1.png _ 900
+
+* go 1.6
+
+.image 20170216_pdxgo_go18/img/gct2.png _ 900
+
+* go 1.7
+
+.image 20170216_pdxgo_go18/img/gct4.png _ 900
+
+* go 1.8 (beta 1)
+
+.image 20170216_pdxgo_go18/img/gct5.png _ 700
+
+* go 1.8 (beta 1) CPU
+
+.image 20170216_pdxgo_go18/img/gctcpu.png _ 800
+
+* How?
+
+STW stack rescanning replaced with by a hybrid write barrier.
+
+.link https://github.com/golang/go/issues/17503
+
+.link https://github.com/golang/proposal/blob/master/design/17503-eliminate-rescan.md
+
+* defer is faster
+
+    name         old time/op  new time/op  delta
+    Defer-4       101ns ± 1%    66ns ± 0%  -34.73%  (p=0.000 n=20+20)
+    Defer10-4    93.2ns ± 1%  62.5ns ± 8%  -33.02%  (p=0.000 n=20+20)
+    DeferMany-4   148ns ± 3%   131ns ± 3%  -11.42%  (p=0.000 n=19+19)
+
+.image 20170216_pdxgo_go18/img/defer.png _ 500
+
+* cgo is also faster!
+
+    name       old time/op  new time/op  delta
+    CgoNoop-8  93.5ns ± 0%  51.1ns ± 1%  -45.34%  (p=0.016 n=4+5)
+
+.image 20170216_pdxgo_go18/img/cgo.png _ 500
+
+Source: [[https://dave.cheney.net/2016/11/19/go-1-8-toolchain-improvements][dave.cheney.net]]
+
+* Changes to the standard library
+
+* Sorting
+
+Exercise:
+
+Given a slice of `Person`
+
+    var p []Person
+
+Print the slice sorted by name, age, and SSN.
+
+.code 20170216_pdxgo_go18/stdlib/sort/sort_test.go /sort.Sort/,/bySSN/
+
+Easy, right?
+
+* Sorting
+
+Well, you forgot about this part.
+
+.code 20170216_pdxgo_go18/stdlib/sort/sort_test.go /byName/,/bySSN\) Swap/
+
+* sort.Slice
+
+Since Go 1.8 you can simply write this:
+
+.code 20170216_pdxgo_go18/stdlib/sort/sort_test.go /sort\.Slice/,/SSN/
+
+Also new `SliceStable` and `SliceIsSorted`.
+
+Made possible by `reflect.Swapper(slice []interface{}) func(i,j int)`.
+
+* Benchmark
+
+    N=1 go test -bench=.
+        BenchmarkSortSort-8    	10000000	       136 ns/op
+        BenchmarkSortSlice-8   	10000000	       178 ns/op
+    N=10 go test -bench=.
+        BenchmarkSortSort-8    	 2000000	       878 ns/op
+        BenchmarkSortSlice-8   	 1000000	      1696 ns/op
+    N=100 go test -bench=.
+        BenchmarkSortSort-8    	  100000	     17481 ns/op
+        BenchmarkSortSlice-8   	   50000	     35438 ns/op
+    N=1000 go test -bench=.
+        BenchmarkSortSort-8    	    5000	    311920 ns/op
+        BenchmarkSortSlice-8   	    3000	    444866 ns/op
+    N=10000 go test -bench=.
+        BenchmarkSortSort-8    	     500	   3533469 ns/op
+        BenchmarkSortSlice-8   	     300	   4917685 ns/op
+    N=100000 go test -bench=.
+        BenchmarkSortSort-8    	      50	  47168302 ns/op
+        BenchmarkSortSlice-8   	      30	  59382816 ns/op
+
+.caption Benchmark ran on my MacBook Pro (8 cores), simply indicative.
+
+* Benchmark
+
+.image 20170216_pdxgo_go18/img/bench.png _ 800
+
+* Benchmark (log/log)
+
+.image 20170216_pdxgo_go18/img/bench_log.png _ 800
+
+* Plugins
+
+Define a plugin:
+
+.code 20170216_pdxgo_go18/stdlib/plugin/plugin.go
+
+Then build it:
+
+    go build -buildmode=plugin
+
+_Note_: This currently works only on Linux.
+
+* Plugins
+
+.code 20170216_pdxgo_go18/stdlib/plugin/main.go /plugin.Open/,/Hello/
+
+* HTTP shutdown
+
+Added `Shutdown` method to `http.Server`.
+
+Example:
+
+Call `Shutdown` when a signal is received:
+
+.code 20170216_pdxgo_go18/stdlib/shutdown.go /subscribe/,/}\(\)/
+
+* HTTP shutdown
+
+Check why the server stopped.
+
+.code 20170216_pdxgo_go18/stdlib/shutdown.go /HandleFunc/,/gracefully/
+
+* Other net/http
+
+- Configuration options for `ReadHeaderTimeout`, `IdleTimeout` and documents `WriteTimeout` added to Server
+- `FileServer` & `ServeContent` supports `If-Match` ETag support
+- Handler's `Request.Context` is canceled when the underlying `net.Conn` closes.
+- Handler's can abort a response with `panic(http.ErrAbortHandler)`.
+- httptrace supports tracing a client request's TLS handshake via `TLSHandshakeStart` & `TLSHandshakeDone` (Me!)
+- `ReverseProxy` now has a hook (`ModifyResponse`) for modiying responses before proxying to the client.
+
+* HTTP/2
+
+`http.Response` now satisfies the `http.Pusher` interface.
+
+    type Pusher interface {
+        Push(target string, opts *PushOptions) error
+    }
+
+A simple example:
+
+.code 20170216_pdxgo_go18/stdlib/http2/http2.go /func rootHandler/,/^}/
+
+* HTTP/2
+
+HTTP
+
+.image 20170216_pdxgo_go18/img/http.png _ 800
+
+HTTP/2
+
+.image 20170216_pdxgo_go18/img/http2.png _ 800
+
+* TLS Additions
+
+- Support for X25519 & ChaCha20-Poly1305 based cipher suites
+- ChaCha20-Poly1305 is now prioritized unless hardware support for AES-GCM is present
+- Basic countermeasures against CBC padding oracles
+- More flexible config APIs
+
+     Config.KeyLogWriter 
+     Config.VerifyPeerCertificate
+     Config.GetClientCertificate
+     Config.GetConfigForClient
+
+* More context support
+
+Since Go 1.7:
+
+- net
+- net/http
+- os/exec
+
+Since Go 1.8:
+
+- http.Server.Shutdown
+- database/sql
+- net.Resolver
+
+* A couple more changes too
+
+.caption [[https://golang.org/doc/go1.8][Go 1.8 release notes]]
+.image 20170216_pdxgo_go18/img/more.png
