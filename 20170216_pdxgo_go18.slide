@@ -17,6 +17,8 @@ Go 1.8 released today!
 
 * Notes
 
+Talk available here: http://go-talks.appspot.com/github.com/freeformz/talks/20170216_pdxgo_go18.slide
+
 Most of the code examples won't run except locally and using Go 1.8.
 
 The playground still runs Go 1.7.
